@@ -25,7 +25,7 @@ class Color:
 			return s*cos(h*2*pi/360)
 		def y(h,s):
 			return s*sin(h*2*pi/360)
-		return sqrt((hsv2[2]-hsv1[2])**2 + (x(hsv2[0],hsv2[1]) - x(hsv1[0],hsv1[1]))**2 + (y(hsv2[0],hsv2[1]) - y(hsv1[0],hsv1[1]))**2 )
+		return sqrt((hsv2[2] - hsv1[2])**2 + (x(hsv2[0],hsv2[1]) - x(hsv1[0],hsv1[1]))**2 + (y(hsv2[0],hsv2[1]) - y(hsv1[0],hsv1[1]))**2 )
 
 	def __str__(self):
 		return "%s -- %s -- %s" % (self.name,self.color,self.frequency)
