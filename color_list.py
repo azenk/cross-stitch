@@ -5,12 +5,10 @@ import Image
 import array
 from optparse import OptionParser
 import csv
-from math import sqrt
+from math import sqrt,sin,cos,pi
 #from configparser import ConfigParser
+from rgb_to_hsv import rgb2hsv
 
-def colordifference(color1,color2):
-	return sqrt((color1[0] - color2[0])**2 + (color1[1] - color2[1])**2 + (color1[2] - color2[2])**2)
-	
 class Color:
 	def __init__(self,color,frequency=None,name=None):
 		if name != None:
@@ -21,10 +19,13 @@ class Color:
 		self.score = 0
 
 	def distance(self,color):
-		rdiff = self.color[0] - color.color[0]
-		gdiff = self.color[1] - color.color[1]
-		bdiff = self.color[2] - color.color[2]
-		return sqrt(rdiff ** 2 + gdiff ** 2 + bdiff ** 2)
+		hsv1 = rgb2hsv(self.color[0],self.color[1],self.color[2])
+		hsv2 = rgb2hsv(color.color[0],color.color[1],color.color[2])
+		def x(h,s):
+			return s*cos(h*2*pi/360)
+		def y(h,s):
+			return s*sin(h*2*pi/360)
+		return sqrt((hsv2[2]-hsv1[2])**2 + (x(hsv2[0],hsv2[1]) - x(hsv1[0],hsv1[1]))**2 + (y(hsv2[0],hsv2[1]) - y(hsv1[0],hsv1[1]))**2 )
 
 	def __str__(self):
 		return "%s -- %s -- %s" % (self.name,self.color,self.frequency)
