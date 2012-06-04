@@ -7,7 +7,6 @@ from optparse import OptionParser
 import csv
 from math import sqrt,sin,cos,pi
 #from configparser import ConfigParser
-from rgb_to_hsv import rgb2hsv
 
 class Color:
 	def __init__(self,color,frequency=None,name=None):
@@ -19,13 +18,38 @@ class Color:
 		self.score = 0
 
 	def distance(self,color):
-		hsv1 = rgb2hsv(self.color[0],self.color[1],self.color[2])
-		hsv2 = rgb2hsv(color.color[0],color.color[1],color.color[2])
+		hsv1 = self.toHSV()
+		hsv2 = color.toHSV()
 		def x(h,s):
 			return s*cos(h*2*pi/360)
 		def y(h,s):
 			return s*sin(h*2*pi/360)
 		return sqrt((hsv2[2] - hsv1[2])**2 + (x(hsv2[0],hsv2[1]) - x(hsv1[0],hsv1[1]))**2 + (y(hsv2[0],hsv2[1]) - y(hsv1[0],hsv1[1]))**2 )
+
+	def toHSV(self):
+		rgb = [self.color[0],self.color[1],self.color[2]]
+		M = max(rgb)
+		m = min(rgb)
+		C = M-m
+		if C == 0:
+			H_prime = 0
+		elif M == rgb[0]:
+			H_prime = (float(rgb[1] - rgb[2]) / C) % 6
+		elif M == rgb[1]:
+			H_prime = (float(rgb[2] - rgb[0]) / C) + 2 
+		elif M == rgb[2]:
+			H_prime = (float(rgb[0] - rgb[1]) / C) + 4 
+	
+		H = 60 * H_prime
+	
+		V = float(M) / 255 * 100
+
+		if V == 0:
+			S = 0
+		else:
+			S = float(C)/(V / 100 * 255) * 100
+
+		return [H,round(S),round(V)]
 
 	def __str__(self):
 		return "%s -- %s -- %s" % (self.name,self.color,self.frequency)
