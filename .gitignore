@@ -1,4 +1,8 @@
 *.py[co]
+*.png
+*.act
+*.jpg
+*.psd
 
 # Packages
 *.egg

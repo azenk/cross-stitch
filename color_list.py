@@ -75,6 +75,14 @@ class ColorCatalog:
 			mappedcolor.frequency = freq
 				
 		return colormap
+
+	def getpctcolors(self,pct=90.0):
+		total_pixels = reduce(lambda x,y: x+ y.frequency ,self.colors,0)
+		toppct = sorted(self.colors,cmp=lambda x,y: x.frequency - y.frequency,reverse=True)
+		while reduce(lambda x,y: x + y.frequency,toppct,0) > float(pct)/100 * total_pixels:
+			toppct.pop()
+		return toppct
+			
 		
 
 class ColorMap:
@@ -109,9 +117,10 @@ class ColorMap:
 			dl += l
 
 		dl.sort()
+		dl.reverse()
 		
 		minfreq = dl[len(commoncolors)**2 / n]
-		mindist= (440/n)
+		mindist= (223/n)
 		#print mindist
 
 		skip = []
@@ -131,7 +140,7 @@ class ColorMap:
 			if i not in skip:
 				reduced.append(commoncolors[i])
 			
-		topn = ColorCatalog(sorted(reduced,lambda x,y: x.frequency - y.frequency,reverse=True)[0:min(len(mappedcolors),n)])
+		topn = ColorCatalog(sorted(reduced,lambda x,y: x.frequency - y.frequency,reverse=True))
 		
 
 		#topn = ColorCatalog(commoncolors)
@@ -168,6 +177,8 @@ def main():
 
 	im = Image.open(args[0])
 	colors = ColorCatalog(map(lambda x: Color(name=None,color=x[1],frequency=x[0]),im.getcolors(im.size[0]*im.size[1])))
+
+	print len(colors.getpctcolors(85.0))
 
 	colormap = ColorMap(colors,dmc_colors,options.colorcount)	
 	
